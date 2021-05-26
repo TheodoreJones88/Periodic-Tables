@@ -1,7 +1,8 @@
-import { React, useState } from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router";
+import { previous, today, next } from "../utils/date-time";
 
-export default function NewReservation({ setDate }) {
+export default function NewReservation() {
   const [formFields, setFormFields] = useState({
     first_name: "",
     last_name: "",
@@ -20,7 +21,7 @@ export default function NewReservation({ setDate }) {
     <>
       <form>
         <div className="form-group">
-          <label htmlFor="first_name">First Name:&nbsp;</label>
+          <label for="first_name">First Name:&nbsp;</label>
           <input
             name="first_name"
             type="text"
@@ -37,7 +38,7 @@ export default function NewReservation({ setDate }) {
           />
         </div>
         <div className="form-group">
-          <label htmlFor="last_name">Last Name:&nbsp;</label>
+          <label for="last_name">Last Name:&nbsp;</label>
           <input
             name="last_name"
             type="text"
@@ -54,7 +55,7 @@ export default function NewReservation({ setDate }) {
           />
         </div>
         <div className="form-group">
-          <label htmlFor="mobile_number">Mobile Number:&nbsp;</label>
+          <label for="mobile_number">Mobile Number:&nbsp;</label>
           <input
             type="tel"
             name="mobile_number"
@@ -71,7 +72,7 @@ export default function NewReservation({ setDate }) {
           />
         </div>
         <div className="form-group">
-          <label htmlFor="reservation_date">Date of Reservation:&nbsp;</label>
+          <label for="reservation_date">Date of Reservation:&nbsp;</label>
           <input
             type="date"
             name="reservation_date"
@@ -88,9 +89,9 @@ export default function NewReservation({ setDate }) {
           />
         </div>
         <div className="form-group">
-          <label htmlFor="reservation_time">Time of Reservation:&nbsp;</label>
+          <label for="reservation_time">Time of Reservation:&nbsp;</label>
           <input
-            type="date"
+            type="time"
             name="reservation_time"
             placeholder="Date of Reservation"
             className="form-control"

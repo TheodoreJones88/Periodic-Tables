@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router";
-import { previous, today, next } from "../utils/date-time";
+import { today } from "../utils/date-time";
+import { createReservation, formatPhoneNumber } from "../utils/api";
+import ErrorAlert from "../layout/ErrorAlert";
 
 export default function NewReservation() {
+  const [errors, setErrors] = useState(null);
   const [formFields, setFormFields] = useState({
     first_name: "",
     last_name: "",
@@ -12,14 +15,59 @@ export default function NewReservation() {
     people: 0,
   });
   const history = useHistory();
-   
+  const phoneNumberFormatter = ({ target }) => {
+    const formattedInputValue = formatPhoneNumber(target.value);
+    setFormFields({
+      ...formFields,
+      mobile_number: formattedInputValue,
+    });
+  };
+
+  function validateDate() {
+    const reserveDate = new Date(formFields.reservation_date);
+    const reserveTime = formFields.reservation_time;
+    let message = "";
+
+    if (reserveDate.getDay() === 1) {
+      message += "Reservations cannot be made on a Tuesday (Restaurant is closed).";
+    }
+    if (formFields.reservation_date < today()) {
+      message += "Reservations cannot be made in the past."; 
+    }
+
+    if (reserveTime.localeCompare("10:30") === -1) {
+      message += "We are closed before 10:30AM";
+    } else if (reserveTime.localeCompare("21:30") === 1) {
+      message += "We are closed after 9:30PM";
+    } else if (reserveTime.localeCompare("21:00") === 1) {
+      message += "You must book at least 30 minutes before the restaurant closes";
+    }
+    
+    if (message) {
+      setErrors(new Error(message))
+      return false;
+    }
+    return true;
+    // return foundErrors;
+  }
+
   function handleSubmit(event) {
     event.preventDefault();
-    history.push(`/dashboard?date=${formFields.reservation_date}`);
+    setErrors(null);
+    const validDate = validateDate();
+    console.log("errors:", errors);
+    if (validDate) {
+      createReservation(formFields).then(() =>
+      history.push(`/dashboard?date=${formFields.reservation_date}`)
+      ).catch(setErrors)
+      // const errorMessage = { message: `${foundErrors.join(",").trim()}` };
+      // setErrors(errorMessage);
+    }
   }
   return (
     <>
-      <form>
+      <form onSubmit={handleSubmit}>
+        {errors && <ErrorAlert error={errors} />}
         <div className="form-group">
           <label for="first_name">First Name:&nbsp;</label>
           <input
@@ -29,6 +77,7 @@ export default function NewReservation() {
             className="form-control"
             id="first_name"
             value={formFields.first_name}
+            required
             onChange={(event) =>
               setFormFields({
                 ...formFields,
@@ -46,6 +95,7 @@ export default function NewReservation() {
             className="form-control"
             id="last_name"
             value={formFields.last_name}
+            required
             onChange={(event) =>
               setFormFields({
                 ...formFields,
@@ -59,16 +109,13 @@ export default function NewReservation() {
           <input
             type="tel"
             name="mobile_number"
-            placeholder="Moile Number"
+            placeholder="XXX-XXX-XXXX"
+            pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
             className="form-control"
             id="mobile_number"
             value={formFields.mobile_number}
-            onChange={(event) =>
-              setFormFields({
-                ...formFields,
-                mobile_number: event.target.value,
-              })
-            }
+            required
+            onChange={phoneNumberFormatter}
           />
         </div>
         <div className="form-group">
@@ -76,10 +123,12 @@ export default function NewReservation() {
           <input
             type="date"
             name="reservation_date"
-            placeholder="Date of Reservation"
+            placeholder="YYYY-MM-DD"
+            pattern="\d{4}-\d{2}-\d{2}"
             className="form-control"
             id="reservation_date"
             value={formFields.reservation_date}
+            required
             onChange={(event) =>
               setFormFields({
                 ...formFields,
@@ -93,10 +142,12 @@ export default function NewReservation() {
           <input
             type="time"
             name="reservation_time"
-            placeholder="Date of Reservation"
+            placeholder="HH:MM"
+            pattern="[0-9]{2}:[0-9]{2}"
             className="form-control"
             id="reservation_time"
             value={formFields.reservation_time}
+            required
             onChange={(event) =>
               setFormFields({
                 ...formFields,
@@ -114,6 +165,7 @@ export default function NewReservation() {
             className="form-control"
             id="people"
             min="1"
+            required
             value={formFields.people}
             onChange={(event) =>
               setFormFields({
@@ -124,13 +176,11 @@ export default function NewReservation() {
           />
         </div>
         <div>
-          <button
-            className="btn btn-primary mx-2"
-            onClick={(event) => handleSubmit(event)}
-          >
+          <button type="submit" className="btn btn-primary mx-2">
             Submit
           </button>
           <button
+            type="button"
             className="btn btn-secondary"
             onClick={history.goBack}
           >

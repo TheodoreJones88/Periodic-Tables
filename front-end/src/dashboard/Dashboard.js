@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { listReservations } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
+import  ReservationRow from "./ReservationRow";
+import TableRow from "./TableRow";
 import { previous, today, next } from "../utils/date-time";
 import { useHistory } from "react-router-dom";
 
@@ -10,12 +12,12 @@ import { useHistory } from "react-router-dom";
  *  the date for which the user wants to view reservations.
  * @returns {JSX.Element}
  */
-function Dashboard({ date, setDate }) {
+function Dashboard({ date }) {
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
+  const [tables, setTables] = useState([]);
+  const [tablesError, setTablesError] = useState(null);
   const history = useHistory();
-	
-  
 
   useEffect(loadDashboard, [date]);
 
@@ -28,6 +30,18 @@ function Dashboard({ date, setDate }) {
     return () => abortController.abort();
   }
 
+  const reservationsJSX = () => {
+    return reservations.map((reservation) => 
+      <ReservationRow key={reservation.reservation_id} reservation={reservation} />);
+  };
+  
+  // and here:
+  const tablesJSX = () => {
+    return tables.map((table) => 
+      <TableRow key={table.table_id} table={table} />);
+  };
+  
+
   return (
     <main>
       <h1>Dashboard</h1>
@@ -35,11 +49,42 @@ function Dashboard({ date, setDate }) {
         <h4 className="mb-0">Reservations for {date}</h4>
       </div>
       <ErrorAlert error={reservationsError} />
-      {JSON.stringify(reservations)}
 
-      <button type="button" onClick={() => history.push(`/dashboard?date=${previous(date)}`)}>Previous</button>
-			<button type="button" onClick={() => history.push(`/dashboard?date=${today()}`)}>Today</button>
-			<button type="button" onClick={() => history.push(`/dashboard?date=${next(date)}`)}>Next</button>
+      <button
+        type="button"
+        onClick={() => history.push(`/dashboard?date=${previous(date)}`)}
+      >
+        Previous
+      </button>
+      <button
+        type="button"
+        onClick={() => history.push(`/dashboard?date=${today()}`)}
+      >
+        Today
+      </button>
+      <button
+        type="button"
+        onClick={() => history.push(`/dashboard?date=${next(date)}`)}
+      >
+        Next
+      </button>
+      <div>
+        {reservations.map((res) => {
+          return (
+            <ul>
+              <li>
+                {res.first_name} {res.last_name}
+              </li>
+              <li>Mobile Number: {res.mobile_number}</li>
+              <li>Date: {res.reservation_date}</li>
+              <li>Time: {res.reservation_time}</li>
+              <li>People: {res.people}</li>
+              <li>Status: </li>
+            </ul>
+          );
+        })}
+        
+      </div>
     </main>
   );
 }

@@ -67,3 +67,40 @@ export async function listReservations(params, signal) {
     .then(formatReservationDate)
     .then(formatReservationTime);
 }
+
+export function formatPhoneNumber(value) {
+  if (!value) return value;
+  const phoneNumber = value.replace(/[^\d]/g, "");
+  const phoneNumberLength = phoneNumber.length;
+  if (phoneNumberLength < 5) return phoneNumber;
+  if (phoneNumberLength < 8) {
+    return `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(3)}`
+  }
+  return `${phoneNumber.slice(0, 3)}-${phoneNumber.slice(
+    3,
+    6
+  )}-${phoneNumber.slice(6, 10)}`
+} 
+export async function createReservation(reservation, signal) {
+  const url = `${API_BASE_URL}/reservations`;
+  reservation.people = Number(reservation.people);
+  const options = {
+    method: "POST",
+    headers,
+    body: JSON.stringify({ data: reservation }),
+  };
+  return await fetchJson(url, options)
+    .then(formatReservationDate)
+    .then(formatReservationTime);
+} 
+
+export async function createTable(table, signal) {
+  const url = `${API_BASE_URL}/tables`;
+  table.capacity = Number(table.capacity);
+  const options = {
+    method: "POST",
+    headers,
+    body: JSON.stringify({ data: table }),
+  };
+  return await fetchJson(url, options);
+} 

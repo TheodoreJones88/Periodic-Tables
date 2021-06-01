@@ -110,6 +110,7 @@ async function create(req, res) {
 
 async function reservationExists(req, res, next) {
   const reservation = await service.read(req.params.reservation_id);
+  console.log(reservation);
   if (reservation) {
     res.locals.reservation = reservation;
     next();
@@ -122,8 +123,8 @@ async function reservationExists(req, res, next) {
 } 
 
 async function read(req, res) {
-  const { reservtion } = res.locals;
-  res.status(200).json({ data: reservtion });
+  const { reservation } = res.locals;
+  res.json({ data: reservation });
 }
 
 module.exports = {

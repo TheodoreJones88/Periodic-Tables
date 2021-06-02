@@ -68,6 +68,20 @@ export async function listReservations(params, signal) {
     .then(formatReservationTime);
 }
 
+export const listReservationsbyNumber = async ({ mobileNumber }, signal) => {
+  const url = new URL(
+    `${API_BASE_URL}/reservations?mobile_number=${mobileNumber}`
+  );
+  return await fetchJson(url, { headers, signal })
+    .then(formatReservationDate)
+    .then(formatReservationTime);
+};
+
+export async function listTables(signal) {
+  const url = new URL(`${API_BASE_URL}/tables`);
+  return await fetchJson(url, { headers, signal });
+}
+
 export function formatPhoneNumber(value) {
   if (!value) return value;
   const phoneNumber = value.replace(/[^\d]/g, "");
@@ -82,7 +96,7 @@ export function formatPhoneNumber(value) {
   )}-${phoneNumber.slice(6, 10)}`
 } 
 export async function createReservation(reservation, signal) {
-  const url = `${API_BASE_URL}/reservations`;
+  const url = new URL(`${API_BASE_URL}/reservations`);
   reservation.people = Number(reservation.people);
   const options = {
     method: "POST",
@@ -94,13 +108,43 @@ export async function createReservation(reservation, signal) {
     .then(formatReservationTime);
 } 
 
-export async function createTable(table, signal) {
-  const url = `${API_BASE_URL}/tables`;
-  table.capacity = Number(table.capacity);
-  const options = {
-    method: "POST",
+export const createTable = async (data, signal) => {
+  const url = new URL(`${API_BASE_URL}/tables`);
+  data.capacity = +data.capacity;
+  return await fetchJson(url, {
     headers,
-    body: JSON.stringify({ data: table }),
-  };
-  return await fetchJson(url, options);
-} 
+    signal,
+    method: "POST",
+    body: JSON.stringify({ data }),
+  });
+}; 
+
+export const updateTable = async (table_id, reservation_id, signal) => {
+  const url = new URL(`${API_BASE_URL}/tables/${table_id}/seat`);
+
+  return await fetchJson(url, {
+    headers,
+    signal,
+    method: "PUT",
+    body: JSON.stringify({ data: { reservation_id } }),
+  });
+};
+
+export const clearTable = async (table_id, signal) => {
+  const url = `${API_BASE_URL}/tables/${table_id}/seat`;
+
+  return await fetch(url, {
+    headers,
+    signal,
+    method: "DELETE",
+  });
+};
+
+export const readReservation = async (reservation_id, signal) => {
+  const url = new URL(`${API_BASE_URL}/reservations/${reservation_id}`);
+  return await fetchJson(url, {
+    headers,
+    signal,
+  }).then(formatReservationDate);
+};
+

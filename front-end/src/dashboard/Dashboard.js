@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { listReservations } from "../utils/api";
+import { listReservations, listTables } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
-import  ReservationRow from "./ReservationRow";
+import ReservationRow from "./ReservationRow";
 import TableRow from "./TableRow";
 import { previous, today, next } from "../utils/date-time";
 import { useHistory } from "react-router-dom";
+import useQuery from "../utils/useQuery";
 
 /**
  * Defines the dashboard page.
@@ -18,29 +19,26 @@ function Dashboard({ date }) {
   const [tables, setTables] = useState([]);
   const [tablesError, setTablesError] = useState(null);
   const history = useHistory();
+  const query = useQuery();
+  const theDate = query.get("date");
+  const [reRender, setReRender] = useState(true);
 
-  useEffect(loadDashboard, [date]);
+  useEffect(loadDashboard, [date, history, theDate, reRender]);
+  
 
   function loadDashboard() {
     const abortController = new AbortController();
     setReservationsError(null);
+    setTablesError(null);
     listReservations({ date }, abortController.signal)
       .then(setReservations)
       .catch(setReservationsError);
+    listTables(abortController.signal).then(setTables).catch(setTablesError);
     return () => abortController.abort();
   }
 
-  const reservationsJSX = () => {
-    return reservations.map((reservation) => 
-      <ReservationRow key={reservation.reservation_id} reservation={reservation} />);
-  };
-  
-  // and here:
-  const tablesJSX = () => {
-    return tables.map((table) => 
-      <TableRow key={table.table_id} table={table} />);
-  };
-  
+
+ 
 
   return (
     <main>
@@ -48,8 +46,7 @@ function Dashboard({ date }) {
       <div className="d-md-flex mb-3">
         <h4 className="mb-0">Reservations for {date}</h4>
       </div>
-      <ErrorAlert error={reservationsError} />
-
+      <div>
       <button
         type="button"
         onClick={() => history.push(`/dashboard?date=${previous(date)}`)}
@@ -68,22 +65,19 @@ function Dashboard({ date }) {
       >
         Next
       </button>
+      </div>
       <div>
-        {reservations.map((res) => {
-          return (
-            <ul>
-              <li>
-                {res.first_name} {res.last_name}
-              </li>
-              <li>Mobile Number: {res.mobile_number}</li>
-              <li>Date: {res.reservation_date}</li>
-              <li>Time: {res.reservation_time}</li>
-              <li>People: {res.people}</li>
-              <li>Status: </li>
-            </ul>
-          );
-        })}
+      <ReservationRow reservations={reservations} />
         
+        <ErrorAlert error={reservationsError} />
+
+        <TableRow
+        tables={tables}
+        reRender={reRender}
+        setReRender={setReRender}
+      />
+
+        <ErrorAlert error={tablesError} />
       </div>
     </main>
   );

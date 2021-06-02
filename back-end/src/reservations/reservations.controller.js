@@ -110,7 +110,6 @@ async function create(req, res) {
 
 async function reservationExists(req, res, next) {
   const reservation = await service.read(req.params.reservation_id);
-  console.log(reservation);
   if (reservation) {
     res.locals.reservation = reservation;
     next();

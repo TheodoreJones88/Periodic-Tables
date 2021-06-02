@@ -7,7 +7,7 @@ export default function CreateTable() {
   const [errors, setErrors] = useState(null);
   const [formFields, setFormFields] = useState({
     table_name: "",
-    capacity: 0,
+    capacity: null,
   });
   const history = useHistory();
 
@@ -20,29 +20,28 @@ export default function CreateTable() {
 
   function handleSubmit(event) {
     event.preventDefault();
-    const abortController = new AbortController();
     setErrors(null);
-    const validFields = validateFields();
-    // if(validFields) {
-    createTable(formFields, abortController.signal)
+    createTable(formFields)
       .then(() => history.push("/dashboard"))
-      .catch(setErrors);
+      .catch((error) => {
+        setErrors(error);
+      });
   }
 
-  function validateFields() {
-    let message = "";
+  // function validateFields() {
+  //   let message = "";
 
-    if (formFields.table_name === "" || Number(formFields.capacity) === 0) {
-      message += "Please fill out all fields.";
-    } else if (formFields.table_name.length < 2) {
-      message += "Table name must be at least 2 characters.";
-    }
+  //   if (formFields.table_name === "" || Number(formFields.capacity) === 0) {
+  //     message += "Please fill out all fields.";
+  //   } else if (formFields.table_name.length < 2) {
+  //     message += "Table name must be at least 2 characters.";
+  //   }
 
-    setErrors(new Error(message));
+  //   setErrors(new Error(message));
 
-    if (message) return false;
-    return true;
-  }
+  //   if (message) return false;
+  //   return true;
+  // }
 
   return (
     <>
@@ -88,6 +87,7 @@ export default function CreateTable() {
           >
             Cancel
           </button>
+          <ErrorAlert error={errors} />
         </div>
       </form>
     </>

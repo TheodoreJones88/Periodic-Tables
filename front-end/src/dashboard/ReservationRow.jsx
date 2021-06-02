@@ -1,22 +1,50 @@
 import React from "react";
 
-export default function ReservationRow({ reservation }) {
-    if(!reservation) return null;
-
-    return (
-        <tr>
-            <th scope="row">{reservation.reservation_id}</th>
-            <td>{reservation.first_name}</td>
-			<td>{reservation.last_name}</td>
-			<td>{reservation.mobile_number}</td>
-			<td>{reservation.reservation_time}</td>
-			<td>{reservation.people}</td>
-			<td>{reservation.status}</td>
-            <td>
-				<a href={`/reservations/${reservation.reservation_id}/seat`}>
-					<button type="button">Seat</button>
-				</a>
-			</td>
-        </tr>
-    )
-}
+export default function ReservationRow({ reservations }) {
+	return (
+	  <table className="table table-striped">
+		<thead className="thead-dark">
+		  <tr>
+			<th scope="col">ID</th>
+			<th scope="col">First Name</th>
+			<th scope="col">Last Name</th>
+			<th scope="col">Mobile Number</th>
+			<th scope="col">Date</th>
+			<th scope="col">Time</th>
+			<th scope="col">Status</th>
+			<th scope="col">People</th>
+			<th scope="col">Seat</th>
+		  </tr>
+		</thead>
+		<tbody>
+		  {reservations.map((res, index) => {
+			const { reservation_id } = res;
+			return (
+			  <tr key={index}>
+				<th scope="row">{res.reservation_id}</th>
+				<td>{res.first_name}</td>
+				<td>{res.last_name}</td>
+				<td>{res.mobile_number}</td>
+				<td>{res.reservation_date}</td>
+				<td>{res.reservation_time}</td>
+				<th data-reservation-id-status={res.reservation_id}>
+				  {res.status}
+				</th>
+				<td>{res.people}</td>
+				{res.status === "booked" ? (
+				  <td>
+					<a
+					  className="btn btn-primary"
+					  href={`/reservations/${reservation_id}/seat`}
+					>
+					  Seat
+					</a>
+				  </td>
+				) : null}
+			  </tr>
+			);
+		  })}
+		</tbody>
+	  </table>
+	);
+  }

@@ -52,10 +52,10 @@ export default function NewReservation() {
   }
 
   function handleSubmit(event) {
+    console.log("handle");
     event.preventDefault();
     setErrors(null);
     const validDate = validateDate();
-    console.log("errors:", errors);
     if (validDate) {
       createReservation(formFields).then(() =>
       history.push(`/dashboard?date=${formFields.reservation_date}`)
@@ -64,6 +64,7 @@ export default function NewReservation() {
       // setErrors(errorMessage);
     }
   }
+  console.log("componentRendering")
   return (
     <>
       <form onSubmit={handleSubmit}>

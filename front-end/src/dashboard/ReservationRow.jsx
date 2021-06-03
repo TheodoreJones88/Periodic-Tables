@@ -31,16 +31,15 @@ export default function ReservationRow({ reservations }) {
 				  {res.status}
 				</th>
 				<td>{res.people}</td>
-				{res.status === "booked" ? (
-				  <td>
+				{res.status !== "booked" ? (
+				  <button type="button">
 					<a
 					  className="btn btn-primary"
 					  href={`/reservations/${reservation_id}/seat`}
 					>
 					  Seat
-					</a>
-				  </td>
-				) : null}
+					</a></button>
+				) : res.status}
 			  </tr>
 			);
 		  })}

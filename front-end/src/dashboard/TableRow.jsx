@@ -13,8 +13,8 @@ export default function TableRow({ tables, reRender, setReRender }) {
         )
       ) {
         clearTable(table_id, abortController.signal)
-          .catch((err) => setError(err))
-          .then(() => setReRender(() => !reRender));
+          .then(() => setReRender(!reRender))
+          .catch((err) => setError(err));
       }
     };
     return (
@@ -39,7 +39,7 @@ export default function TableRow({ tables, reRender, setReRender }) {
                     {table.reservation_id ? "Occupied" : "Free"}
                   </td>
                   <td>
-                    {table.reservation_id ? (
+                    {table.reservation_id !== null ? (
                       <button
                         data-table-id-finish={table.table_id}
                         className="btn btn-danger"
@@ -48,6 +48,7 @@ export default function TableRow({ tables, reRender, setReRender }) {
                         Finish
                       </button>
                     ) : null}
+                    {console.log(table.reservation_id)}
                   </td>
                 </tr>
               );

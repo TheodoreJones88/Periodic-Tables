@@ -28,24 +28,9 @@ export default function CreateTable() {
       });
   }
 
-  // function validateFields() {
-  //   let message = "";
-
-  //   if (formFields.table_name === "" || Number(formFields.capacity) === 0) {
-  //     message += "Please fill out all fields.";
-  //   } else if (formFields.table_name.length < 2) {
-  //     message += "Table name must be at least 2 characters.";
-  //   }
-
-  //   setErrors(new Error(message));
-
-  //   if (message) return false;
-  //   return true;
-  // }
 
   return (
     <>
-      {errors && <ErrorAlert error={errors} />}
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label for="table_name">Table Name:&nbsp;</label>

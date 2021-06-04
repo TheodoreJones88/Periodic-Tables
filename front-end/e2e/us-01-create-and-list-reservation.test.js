@@ -32,38 +32,32 @@ describe("US-01 - Create and list reservations - E2E", () => {
   });
 
   describe("/reservations/new page", () => {
-    test.only("filling and submitting form creates a new reservation and then displays the dashboard for the reservation date", async () => {
+    test("filling and submitting form creates a new reservation and then displays the dashboard for the reservation date", async () => {
       const lastName = Date.now().toString(10);
-      console.log("test1");
 
-      // await page.type("input[name=first_name]", "James");
-      // await page.type("input[name=last_name]", lastName);
-      // await page.type("input[name=mobile_number]", "555-1212");
-      // await page.type("input[name=reservation_date]", "01012035");
-      // await page.type("input[name=reservation_time]", "1330");
-      // await page.type("input[name=people]", "2");
-      console.log("test2");
+      await page.type("input[name=first_name]", "James");
+      await page.type("input[name=last_name]", lastName);
+      await page.type("input[name=mobile_number]", "555-1212");
+      await page.type("input[name=reservation_date]", "01012035");
+      await page.type("input[name=reservation_time]", "1330");
+      await page.type("input[name=people]", "2");
 
       await page.screenshot({
         path: ".screenshots/us-01-submit-before.png",
         fullPage: true,
       });
-      console.log("test3");
 
       await Promise.all([
-        page.click("#icecream"),
-        // page.waitForNavigation({ waitUntil: "networkidle0" }),
+        page.click("[type=submit]"),
+        page.waitForNavigation({ waitUntil: "networkidle0" }),
       ]);
-      console.log("test4");
 
       await page.screenshot({
         path: ".screenshots/us-01-submit-after.png",
         fullPage: true,
       });
-      console.log("test5");
 
       await expect(page).toMatch(lastName);
-      console.log("test6");
     });
 
     test("canceling form returns to previous page", async () => {

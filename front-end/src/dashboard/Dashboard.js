@@ -24,7 +24,6 @@ function Dashboard({ date }) {
   const [reRender, setReRender] = useState(true);
 
   useEffect(loadDashboard, [date, history, theDate, reRender]);
-  
 
   function loadDashboard() {
     const abortController = new AbortController();
@@ -37,9 +36,6 @@ function Dashboard({ date }) {
     return () => abortController.abort();
   }
 
-
- 
-
   return (
     <main>
       <h1>Dashboard</h1>
@@ -47,35 +43,41 @@ function Dashboard({ date }) {
         <h4 className="mb-0">Reservations for {date}</h4>
       </div>
       <div>
-      <button
-        type="button"
-        onClick={() => history.push(`/dashboard?date=${previous(date)}`)}
-      >
-        Previous
-      </button>
-      <button
-        type="button"
-        onClick={() => history.push(`/dashboard?date=${today()}`)}
-      >
-        Today
-      </button>
-      <button
-        type="button"
-        onClick={() => history.push(`/dashboard?date=${next(date)}`)}
-      >
-        Next
-      </button>
+        <button
+          type="button"
+          onClick={() => history.push(`/dashboard?date=${previous(date)}`)}
+        >
+          Previous
+        </button>
+        <button
+          type="button"
+          onClick={() => history.push(`/dashboard?date=${today()}`)}
+        >
+          Today
+        </button>
+        <button
+          type="button"
+          onClick={() => history.push(`/dashboard?date=${next(date)}`)}
+        >
+          Next
+        </button>
       </div>
       <div>
-      <ReservationRow reservations={reservations} />
-        
+        <ReservationRow
+          reservations={reservations}
+          reRender={reRender}
+          setReRender={setReRender}
+          reservationsError={reservationsError}
+          setReservationsError={setReservationsError}
+        />
+
         <ErrorAlert error={reservationsError} />
 
         <TableRow
-        tables={tables}
-        reRender={reRender}
-        setReRender={setReRender}
-      />
+          tables={tables}
+          reRender={reRender}
+          setReRender={setReRender}
+        />
 
         <ErrorAlert error={tablesError} />
       </div>

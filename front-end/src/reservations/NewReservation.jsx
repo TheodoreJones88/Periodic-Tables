@@ -111,7 +111,6 @@ export default function NewReservation() {
             type="tel"
             name="mobile_number"
             placeholder="XXX-XXX-XXXX"
-            pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
             className="form-control"
             id="mobile_number"
             value={formFields.mobile_number}

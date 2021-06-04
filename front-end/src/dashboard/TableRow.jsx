@@ -48,7 +48,6 @@ export default function TableRow({ tables, reRender, setReRender }) {
                         Finish
                       </button>
                     ) : null}
-                    {console.log(table.reservation_id)}
                   </td>
                 </tr>
               );

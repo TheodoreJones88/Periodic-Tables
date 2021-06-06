@@ -5,7 +5,6 @@ import ReservationRow from "./ReservationRow";
 import TableRow from "./TableRow";
 import { previous, today, next } from "../utils/date-time";
 import { useHistory } from "react-router-dom";
-import useQuery from "../utils/useQuery";
 
 /**
  * Defines the dashboard page.
@@ -19,11 +18,9 @@ function Dashboard({ date }) {
   const [tables, setTables] = useState([]);
   const [tablesError, setTablesError] = useState(null);
   const history = useHistory();
-  const query = useQuery();
-  const theDate = query.get("date");
   const [reRender, setReRender] = useState(true);
 
-  useEffect(loadDashboard, [date, history, theDate, reRender]);
+  useEffect(loadDashboard, [date, history, reRender]);
 
   function loadDashboard() {
     const abortController = new AbortController();

@@ -64,6 +64,17 @@ async function reservationIdExists(req, res, next) {
     });
   }
 }
+async function ifSeated(req, res, next) {
+  const {reservation_id} = req.body.data;
+  const reservation = await resService.read(reservation_id);
+  if(reservation.status === "seated"){
+    return next({
+      status: 400,
+      message: "Ar me matee your arse be seated",
+    })
+  }
+  next();
+}
 
 async function missingReservationId(req, res, next) {
   const { data } = res.locals;
@@ -140,15 +151,16 @@ async function update(req, res) {
     ...res.locals.table,
     ...req.body.data,
   };
-  console.log("updated:", updatedTable);
+  const { reservation_id } = req.body.data;
+  await resService.updateStatus(reservation_id, "seated");
   const data = await tablesService.update(updatedTable);
   res.json({ data });
 }
 
 async function destroy(req, res, next) {
-  console.log(res.locals.table);
   await tablesService.destroy(res.locals.table.table_id);
-  res.sendStatus(200);
+  await resService.updateStatus(res.locals.table.reservation_id, "finished");
+  return res.sendStatus(200);
 }
 
 async function list(req, res) {
@@ -163,6 +175,7 @@ module.exports = {
     asyncErrorBoundary(reservationIdExists),
     asyncErrorBoundary(validateCapacity),
     asyncErrorBoundary(ifOccupied),
+    asyncErrorBoundary(ifSeated),
     asyncErrorBoundary(update),
   ],
   destroy: [

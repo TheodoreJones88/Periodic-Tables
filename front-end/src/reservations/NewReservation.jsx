@@ -29,10 +29,11 @@ export default function NewReservation() {
     let message = "";
 
     if (reserveDate.getDay() === 1) {
-      message += "Reservations cannot be made on a Tuesday (Restaurant is closed).";
+      message +=
+        "Reservations cannot be made on a Tuesday (Restaurant is closed).";
     }
     if (formFields.reservation_date < today()) {
-      message += "Reservations cannot be made in the past."; 
+      message += "Reservations cannot be made in the past.";
     }
 
     if (reserveTime.localeCompare("10:30") === -1) {
@@ -40,11 +41,12 @@ export default function NewReservation() {
     } else if (reserveTime.localeCompare("21:30") === 1) {
       message += "We are closed after 9:30PM";
     } else if (reserveTime.localeCompare("21:00") === 1) {
-      message += "You must book at least 30 minutes before the restaurant closes";
+      message +=
+        "You must book at least 30 minutes before the restaurant closes";
     }
-    
+
     if (message) {
-      setErrors(new Error(message))
+      setErrors(new Error(message));
       return false;
     }
     return true;
@@ -57,20 +59,20 @@ export default function NewReservation() {
     setErrors(null);
     const validDate = validateDate();
     if (validDate) {
-      createReservation(formFields).then(() =>
-      history.push(`/dashboard?date=${formFields.reservation_date}`)
-      ).catch(setErrors)
+      createReservation(formFields)
+        .then( history.push(`/dashboard?date=${formFields.reservation_date}`))
+        .catch((err) => setErrors(err));
+      console.log("handleEnd");
       // const errorMessage = { message: `${foundErrors.join(",").trim()}` };
       // setErrors(errorMessage);
     }
   }
-  console.log("componentRendering")
   return (
     <>
       <form onSubmit={handleSubmit}>
-        {errors && <ErrorAlert error={errors} />}
+        {errors && <ErrorAlert error={errors} />}                      
         <div className="form-group">
-          <label for="first_name">First Name:&nbsp;</label>
+          <label htmlFor="first_name">First Name:&nbsp;</label>
           <input
             name="first_name"
             type="text"
@@ -88,7 +90,7 @@ export default function NewReservation() {
           />
         </div>
         <div className="form-group">
-          <label for="last_name">Last Name:&nbsp;</label>
+          <label htmlFor="last_name">Last Name:&nbsp;</label>
           <input
             name="last_name"
             type="text"
@@ -106,7 +108,7 @@ export default function NewReservation() {
           />
         </div>
         <div className="form-group">
-          <label for="mobile_number">Mobile Number:&nbsp;</label>
+          <label htmlFor="mobile_number">Mobile Number:&nbsp;</label>
           <input
             type="tel"
             name="mobile_number"
@@ -119,7 +121,7 @@ export default function NewReservation() {
           />
         </div>
         <div className="form-group">
-          <label for="reservation_date">Date of Reservation:&nbsp;</label>
+          <label htmlFor="reservation_date">Date of Reservation:&nbsp;</label>
           <input
             type="date"
             name="reservation_date"
@@ -138,7 +140,7 @@ export default function NewReservation() {
           />
         </div>
         <div className="form-group">
-          <label for="reservation_time">Time of Reservation:&nbsp;</label>
+          <label htmlFor="reservation_time">Time of Reservation:&nbsp;</label>
           <input
             type="time"
             name="reservation_time"
@@ -157,7 +159,7 @@ export default function NewReservation() {
           />
         </div>
         <div className="form-group">
-          <label for="people">Number In Party:&nbsp;</label>
+          <label htmlFor="people">Number In Party:&nbsp;</label>
           <input
             type="number"
             name="people"

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import ErrorAlert from "../layout/ErrorAlert";
 import { clearTable } from "../utils/api";
 
-export default function TableRow({ tables, reRender, setReRender }) {
+export default function TableRow({ tables, reRender, setReRender, loadDashboard}) {
     const [error, setError] = useState(null);
     const handleClick = (table_id) => {
       setError(null);
@@ -26,7 +26,7 @@ export default function TableRow({ tables, reRender, setReRender }) {
               <th scope="col">Table Name</th>
               <th scope="col">Capacity</th>
               <th scope="col">Status</th>
-              <th scope="col"></th>
+              <th scope="col">If Finished</th>
             </tr>
           </thead>
           <tbody>
@@ -44,10 +44,9 @@ export default function TableRow({ tables, reRender, setReRender }) {
                         data-table-id-finish={table.table_id}
                         className="btn btn-danger"
                         onClick={() => handleClick(table.table_id)}
-                      >
-                        Finish
+                      > Finish
                       </button>
-                    ) : null}
+                    ) : "" }
                   </td>
                 </tr>
               );

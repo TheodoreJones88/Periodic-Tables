@@ -12,10 +12,10 @@ function list(reservation_date) {
     .orderBy("reservation_time", "asc");
 }
 
-function create(newRestaurant) {
+function create(newReservation) {
   return knex(tableName)
-    .insert(newRestaurant, "*")
-    .then((createdRestaurant) => createdRestaurant[0]);
+    .insert(newReservation, "*")
+    .then((createdReservation) => createdReservation[0]);
 }
 
 function read(reservation_id) {

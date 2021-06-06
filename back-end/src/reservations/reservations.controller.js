@@ -25,34 +25,27 @@ function notNull(obj) {
   return true;
 }
 function statusIsValid(req, res, next) {
-  const { status } = res.locals.reservation;
-
-  if (status === "seated") {
-    next({
+  const status = req.body.data.status;
+  if (!status || status === "booked") {
+    req.body.data.status = "booked";
+    return next();
+  } else {
+    return next({
       status: 400,
-      message:
-        "There's a party seated here, are you just gonna seat the new party on top of them?! Imbecile!!!",
+      message: `Invalid data format provided. ${status}`,
     });
   }
-  if (status === "finished") {
-    next({
-      status: 400,
-      message:
-        "They're dirty dishes still there you FOOL!, The table has just finished their meal!",
-    });
-  }
-
-  if (status === "cancelled") {
-    next({
-      status: 400,
-      message:
-        "Can't you tell that this reservation has been cancelled?! You're a slow one aren't you?",
-    });
-  }
-  if(status === "booked") {
-
-    next()
-  }
+  // if (status !== "booked") {
+  //   if (!status) req.body.data.status = "booked";
+  //       else {
+  //           return next({
+  //               status: 400,
+  //               message: `Invalid data format provided. ${status}` ,
+  //           });
+  //       }
+  // } else {
+  //   return next();
+  // }
 }
 function hasValidFields(req, res, next) {
   const { data = {} } = req.body;
@@ -119,6 +112,7 @@ function hasValidFields(req, res, next) {
     });
   }
   res.locals.reservation = data;
+  console.log("1", data);
   next();
 }
 
@@ -179,14 +173,13 @@ async function update(req, res) {
   const { reservation, status } = res.locals;
   const { reservation_id } = reservation;
   const newStatus = await service.updateStatus(reservation_id, status);
-  console.log(status);
-  res.status(200).json({data: newStatus});
+  res.status(200).json({ data: newStatus });
 }
 
 module.exports = {
   list: asyncErrorBoundary(list),
   create: [
-    hasValidFields,
+    asyncErrorBoundary(hasValidFields),
     asyncErrorBoundary(statusIsValid),
     asyncErrorBoundary(create),
   ],

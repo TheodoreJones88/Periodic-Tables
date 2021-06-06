@@ -4,7 +4,7 @@ import { today } from "../utils/date-time";
 import { createReservation, formatPhoneNumber } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 
-export default function NewReservation() {
+export default function NewReservation({date, loadDashboard}) {
   const [errors, setErrors] = useState(null);
   const [formFields, setFormFields] = useState({
     first_name: "",
@@ -66,6 +66,13 @@ export default function NewReservation() {
       // const errorMessage = { message: `${foundErrors.join(",").trim()}` };
       // setErrors(errorMessage);
     }
+  } 
+  function handleChange({target}) {
+    setFormFields({
+      ...formFields,
+      [target.name]: target.value,
+    })
+            
   }
   return (
     <>
@@ -81,12 +88,7 @@ export default function NewReservation() {
             id="first_name"
             value={formFields.first_name}
             required
-            onChange={(event) =>
-              setFormFields({
-                ...formFields,
-                first_name: event.target.value,
-              })
-            }
+            onChange={handleChange}
           />
         </div>
         <div className="form-group">
@@ -99,12 +101,7 @@ export default function NewReservation() {
             id="last_name"
             value={formFields.last_name}
             required
-            onChange={(event) =>
-              setFormFields({
-                ...formFields,
-                last_name: event.target.value,
-              })
-            }
+            onChange={handleChange}
           />
         </div>
         <div className="form-group">
@@ -131,12 +128,7 @@ export default function NewReservation() {
             id="reservation_date"
             value={formFields.reservation_date}
             required
-            onChange={(event) =>
-              setFormFields({
-                ...formFields,
-                reservation_date: event.target.value,
-              })
-            }
+            onChange={handleChange}
           />
         </div>
         <div className="form-group">
@@ -150,12 +142,7 @@ export default function NewReservation() {
             id="reservation_time"
             value={formFields.reservation_time}
             required
-            onChange={(event) =>
-              setFormFields({
-                ...formFields,
-                reservation_time: event.target.value,
-              })
-            }
+            onChange={handleChange}
           />
         </div>
         <div className="form-group">
@@ -169,12 +156,7 @@ export default function NewReservation() {
             min="1"
             required
             value={formFields.people}
-            onChange={(event) =>
-              setFormFields({
-                ...formFields,
-                people: event.target.value,
-              })
-            }
+            onChange={handleChange}
           />
         </div>
         <div>

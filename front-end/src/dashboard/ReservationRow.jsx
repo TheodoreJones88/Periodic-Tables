@@ -5,18 +5,18 @@ export default function ReservationRow({
   reservations,
   reRender,
   setReRender,
-  setreservationsError,
+  setReservationsError,
 }) {
-	function handleCancel(resId) {
-		const confirm = window.confirm(
-		  "Do you want to cancel this reservation? This cannot be undone."
-		);
-		if (confirm) {
-		  changeStatus(resId)
-			.then(() => setReRender(!reRender))
-			.catch(setreservationsError);
-		}
-	  }
+  function handleCancel({target}) {
+    const confirm = window.confirm(
+      "Do you want to cancel this reservation? This cannot be undone."
+    );
+    if (confirm) {
+      changeStatus(Number(target.id))
+        .then(() => setReRender(!reRender))
+        .catch(setReservationsError);
+    }
+  }
   return (
     <table className="table table-striped">
       <thead className="thead-dark">
@@ -30,7 +30,7 @@ export default function ReservationRow({
           <th scope="col">Status</th>
           <th scope="col">People</th>
           <th scope="col">Seat</th>
-		  <th scope="col">Edit</th>
+          <th scope="col">Edit</th>
           <th scope="col">Cancel</th>
         </tr>
       </thead>
@@ -45,22 +45,49 @@ export default function ReservationRow({
               <td>{res.mobile_number}</td>
               <td>{res.reservation_date}</td>
               <td>{res.reservation_time}</td>
-              <th data-reservation-id-status={res.reservation_id}>
+              <td data-reservation-id-status={res.reservation_id}>
                 {res.status}
-              </th>
+              </td>
               <td>{res.people}</td>
-              {res.status !== "booked" ? (
+              <td>
+              {res.status === "booked" ? (
                 <button type="button">
                   <a
                     className="btn btn-primary"
                     href={`/reservations/${reservation_id}/seat`}
                   >
+                    {" "}
                     Seat
                   </a>
                 </button>
               ) : (
                 res.status
               )}
+              </td>
+              <td>
+              {res.status === "booked" ? (
+                <button type="button">
+                  <a
+                    className="btn btn-primary"
+                    href={`/reservations/${reservation_id}/edit`}
+                  >
+                    {" "}
+                     Edit
+                  </a>
+                </button>
+              ) : (
+                res.status
+              )}
+              </td>
+              <td>
+              {res.status === "booked" ? (
+                <button type="button" id={res.reservation_id} data-reservation-id-cancel={res.reservation_id} onClick={handleCancel}>
+                     Cancel
+                </button>
+              ) : (
+                res.status
+              )}
+              </td>
             </tr>
           );
         })}

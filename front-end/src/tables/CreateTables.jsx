@@ -3,11 +3,11 @@ import { useHistory } from "react-router";
 import { createTable } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 
-export default function CreateTable() {
+export default function CreateTable( {loadDashboard}) {
   const [errors, setErrors] = useState(null);
   const [formFields, setFormFields] = useState({
     table_name: "",
-    capacity: null,
+    capacity: 0,
   });
   const history = useHistory();
 
@@ -22,6 +22,7 @@ export default function CreateTable() {
     event.preventDefault();
     setErrors(null);
     createTable(formFields)
+      .then(loadDashboard)
       .then(() => history.push("/dashboard"))
       .catch((error) => {
         setErrors(error);
@@ -33,7 +34,7 @@ export default function CreateTable() {
     <>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label for="table_name">Table Name:&nbsp;</label>
+          <label htmlFor="table_name">Table Name:&nbsp;</label>
           <input
             name="table_name"
             type="text"
@@ -48,7 +49,7 @@ export default function CreateTable() {
         </div>
 
         <div className="form-group">
-          <label for="capacity">Seats:&nbsp;</label>
+          <label htmlFor="capacity">Seats:&nbsp;</label>
           <input
             type="number"
             name="capacity"

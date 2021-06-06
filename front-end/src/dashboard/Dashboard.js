@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { listReservations, listTables } from "../utils/api";
+import React from "react";
 import ErrorAlert from "../layout/ErrorAlert";
 import ReservationRow from "./ReservationRow";
 import TableRow from "./TableRow";
@@ -12,26 +11,22 @@ import { useHistory } from "react-router-dom";
  *  the date for which the user wants to view reservations.
  * @returns {JSX.Element}
  */
-function Dashboard({ date }) {
-  const [reservations, setReservations] = useState([]);
-  const [reservationsError, setReservationsError] = useState(null);
-  const [tables, setTables] = useState([]);
-  const [tablesError, setTablesError] = useState(null);
-  const history = useHistory();
-  const [reRender, setReRender] = useState(true);
+function Dashboard({
+  date,
+  reservations,
+  setReservations,
+  tables,
+  setTables,
+  reservationsError,
+  setReservationsError,
+  tablesError,
+  setTablesError,
+  loadDashboard,
+  reRender,
+  setReRender,
+}) {
+  const history = useHistory(); 
 
-  useEffect(loadDashboard, [date, history, reRender]);
-
-  function loadDashboard() {
-    const abortController = new AbortController();
-    setReservationsError(null);
-    setTablesError(null);
-    listReservations({ date }, abortController.signal)
-      .then(setReservations)
-      .catch(setReservationsError);
-    listTables(abortController.signal).then(setTables).catch(setTablesError);
-    return () => abortController.abort();
-  }
 
   return (
     <main>
@@ -66,6 +61,7 @@ function Dashboard({ date }) {
           setReRender={setReRender}
           reservationsError={reservationsError}
           setReservationsError={setReservationsError}
+          loadDashboard={loadDashboard}
         />
 
         <ErrorAlert error={reservationsError} />
@@ -74,6 +70,7 @@ function Dashboard({ date }) {
           tables={tables}
           reRender={reRender}
           setReRender={setReRender}
+          loadDashboard={loadDashboard}
         />
 
         <ErrorAlert error={tablesError} />

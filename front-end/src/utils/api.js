@@ -95,14 +95,13 @@ export function formatPhoneNumber(value) {
     6
   )}-${phoneNumber.slice(6, 10)}`
 } 
-export async function createReservation(reservation, signal) {
+export async function createReservation(reservation) {
   const url = new URL(`${API_BASE_URL}/reservations`);
   reservation.people = Number(reservation.people);
   const options = {
     method: "POST",
     headers,
     body: JSON.stringify({ data: reservation }),
-    signal,
   };
   return await fetchJson(url, options)
     .then(formatReservationDate)

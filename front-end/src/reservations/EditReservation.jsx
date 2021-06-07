@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import { useHistory } from "react-router";
-import { today } from "../utils/date-time";
-import { createReservation, formatPhoneNumber } from "../utils/api";
+import React, {useState, useEffect} from "react";
+import {useHistory, useParams} from "react-router-dom";
+import {formatPhoneNumber, updateReservation, readReservation} from "../utils/api";
+import {today} from "../utils/date-time"
 import ErrorAlert from "../layout/ErrorAlert";
 
-export default function NewReservation({date, loadDashboard}) {
-  const [errors, setErrors] = useState(null);
+export default function EditReservation() {
+    const [error, setError] = useState(null);
   const [formFields, setFormFields] = useState({
     first_name: "",
     last_name: "",
@@ -14,6 +14,17 @@ export default function NewReservation({date, loadDashboard}) {
     reservation_time: "",
     people: 0,
   });
+  const {reservation_id} = useParams();
+  useEffect(() => {
+    const abortController = new AbortController();
+
+
+    readReservation(reservation_id, abortController.signal)
+      .then((res) => {
+        setFormFields(res);
+      })
+      .catch(setError);
+  }, [reservation_id]);
   const history = useHistory();
   const phoneNumberFormatter = ({ target }) => {
     const formattedInputValue = formatPhoneNumber(target.value);
@@ -46,7 +57,7 @@ export default function NewReservation({date, loadDashboard}) {
     }
 
     if (message) {
-      setErrors(new Error(message));
+      setError(new Error(message));
       return false;
     }
     return true;
@@ -54,12 +65,12 @@ export default function NewReservation({date, loadDashboard}) {
 
   function handleSubmit(event) {
     event.preventDefault();
-    setErrors(null);
+    setError(null);
     const validDate = validateDate();
     if (validDate) {
-      createReservation(formFields)
-        .then( history.push(`/dashboard?date=${formFields.reservation_date}`))
-        .catch((err) => setErrors(err));
+      updateReservation(formFields)
+        .then(() => history.push(`/dashboard?date=${formFields.reservation_date}`))
+        .catch((err) => setError(err));
     }
   } 
   function handleChange({target}) {
@@ -72,7 +83,7 @@ export default function NewReservation({date, loadDashboard}) {
   return (
     <>
       <form onSubmit={handleSubmit}>
-        {errors && <ErrorAlert error={errors} />}                      
+        {error && <ErrorAlert error={error} />}                      
         <div className="form-group">
           <label htmlFor="first_name">First Name:&nbsp;</label>
           <input
@@ -81,7 +92,7 @@ export default function NewReservation({date, loadDashboard}) {
             placeholder="First Name"
             className="form-control"
             id="first_name"
-            value={formFields.first_name}
+            value={formFields?.first_name}
             required
             onChange={handleChange}
           />
@@ -94,7 +105,7 @@ export default function NewReservation({date, loadDashboard}) {
             placeholder="last_name"
             className="form-control"
             id="last_name"
-            value={formFields.last_name}
+            value={formFields?.last_name}
             required
             onChange={handleChange}
           />
@@ -107,7 +118,7 @@ export default function NewReservation({date, loadDashboard}) {
             placeholder="XXX-XXX-XXXX"
             className="form-control"
             id="mobile_number"
-            value={formFields.mobile_number}
+            value={formFields?.mobile_number}
             required
             onChange={phoneNumberFormatter}
           />
@@ -121,7 +132,7 @@ export default function NewReservation({date, loadDashboard}) {
             pattern="\d{4}-\d{2}-\d{2}"
             className="form-control"
             id="reservation_date"
-            value={formFields.reservation_date}
+            value={formFields?.reservation_date}
             required
             onChange={handleChange}
           />
@@ -135,7 +146,7 @@ export default function NewReservation({date, loadDashboard}) {
             pattern="[0-9]{2}:[0-9]{2}"
             className="form-control"
             id="reservation_time"
-            value={formFields.reservation_time}
+            value={formFields?.reservation_time}
             required
             onChange={handleChange}
           />
@@ -150,7 +161,7 @@ export default function NewReservation({date, loadDashboard}) {
             id="people"
             min="1"
             required
-            value={formFields.people}
+            value={formFields?.people}
             onChange={handleChange}
           />
         </div>

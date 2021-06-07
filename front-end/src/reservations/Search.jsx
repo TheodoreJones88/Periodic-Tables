@@ -15,7 +15,7 @@ export default function Search({reRender, setReRender}) {
   const loadReservations = async (number) => {
       const abortController = new AbortController();
     setError(null);
-    listReservationsbyNumber({ number }, abortController.signal)
+    listReservationsbyNumber( {number} , abortController.signal)
       .then((res) => {
         setReservationList(res);
         if (!res.length) {

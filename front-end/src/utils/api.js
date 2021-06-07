@@ -68,9 +68,9 @@ export async function listReservations(params, signal) {
     .then(formatReservationTime);
 }
 
-export const listReservationsbyNumber = async ({ mobileNumber }, signal) => {
+export const listReservationsbyNumber = async ({ number }, signal) => {
   const url = new URL(
-    `${API_BASE_URL}/reservations?mobile_number=${mobileNumber}`
+    `${API_BASE_URL}/reservations?mobile_number=${number}`
   );
   return await fetchJson(url, { headers, signal })
     .then(formatReservationDate)
@@ -156,5 +156,16 @@ export const changeStatus = async (reservation_id, signal) => {
     signal,
     method: "PUT",
     body: JSON.stringify({ data: { status: "cancelled" } }),
+  });
+};
+
+export const updateReservation = async (reservation, signal) => {
+  const url = `${API_BASE_URL}/reservations/${reservation.reservation_id}`;
+
+  return await fetchJson(url, {
+    headers,
+    signal,
+    method: "PUT",
+    body: JSON.stringify({ data: reservation }),
   });
 };

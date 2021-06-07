@@ -36,10 +36,19 @@ function searchByNumber(mobile_number) {
     .orderBy("reservation_date");
 }
 
+async function updateEdit(reservation) {
+  const reservation_id = reservation.reservation_id;
+  return await knex(tableName)
+    .where({reservation_id})
+    .update(reservation)
+    .then(() => read(reservation_id));
+}
+
 module.exports = {
   create,
   list,
   read,
   updateStatus,
+  updateEdit,
   searchByNumber,
 };

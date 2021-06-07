@@ -6,11 +6,11 @@ const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
 
 async function list(req, res) {
   const { date } = req.query;
-  const { mobile_number } = req.query;
-  if (mobile_number){
+  const  {mobile_number}  = req.query;
+  if (mobile_number) {
     res.json({ data: await service.searchByNumber(mobile_number) });
-  }else {
-    res.json({data: await service.list(date)})
+  } else {
+    res.json({ data: await service.list(date) });
   }
 }
 
@@ -117,7 +117,6 @@ function hasValidFields(req, res, next) {
     });
   }
   res.locals.reservation = data;
-  console.log("1", data);
   next();
 }
 
@@ -181,6 +180,14 @@ async function update(req, res) {
   res.status(200).json({ data: newStatus });
 }
 
+const updateEdit = async (req, res) => {
+  const reserve = {
+    reservation_id: req.params.reservation_id,
+    ...res.locals.reservation,
+  };
+  res.json({ data: await service.updateEdit(reserve) });
+};
+
 module.exports = {
   list: asyncErrorBoundary(list),
   create: [
@@ -194,4 +201,10 @@ module.exports = {
     asyncErrorBoundary(validateStatus),
     asyncErrorBoundary(update),
   ],
+  updateEdit: [
+    asyncErrorBoundary(reservationExists),
+    asyncErrorBoundary(hasValidFields),
+    asyncErrorBoundary(statusIsValid),
+    asyncErrorBoundary(updateEdit),
+  ]
 };

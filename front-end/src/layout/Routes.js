@@ -10,6 +10,7 @@ import { today } from "../utils/date-time";
 import useQuery from "../utils/useQuery";
 import { useHistory } from "react-router-dom";
 import { listReservations, listTables } from "../utils/api";
+import EditReservation from "../reservations/EditReservation";
 
 
 /**
@@ -72,6 +73,9 @@ function Routes() {
       </Route>
       <Route path="/tables/new">
         <CreateTable loadDashboard={loadDashboard} />
+      </Route>
+      <Route exact={true} path="/reservations/:reservation_id/edit">
+        <EditReservation />
       </Route>
       <Route exact={true} path="/reservations/:reservation_id/seat">
         <SeatReservation />

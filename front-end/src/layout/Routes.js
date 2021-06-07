@@ -5,10 +5,12 @@ import NewReservation from "../reservations/NewReservation";
 import CreateTable from "../tables/CreateTables";
 import NotFound from "./NotFound";
 import SeatReservation from "../reservations/SeatReservation";
+import Search from "../reservations/Search";
 import { today } from "../utils/date-time";
 import useQuery from "../utils/useQuery";
 import { useHistory } from "react-router-dom";
 import { listReservations, listTables } from "../utils/api";
+
 
 /**
  * Defines all the routes for the application.
@@ -73,6 +75,9 @@ function Routes() {
       </Route>
       <Route exact={true} path="/reservations/:reservation_id/seat">
         <SeatReservation />
+      </Route>
+      <Route path="/search">
+        <Search reRender={reRender} setReRender={setReRender} />
       </Route>
       <Route>
         <NotFound />

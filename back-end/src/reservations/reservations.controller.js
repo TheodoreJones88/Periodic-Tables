@@ -6,7 +6,12 @@ const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
 
 async function list(req, res) {
   const { date } = req.query;
-  res.json({ data: await service.list(date) });
+  const { mobile_number } = req.query;
+  if (mobile_number){
+    res.json({ data: await service.searchByNumber(mobile_number) });
+  }else {
+    res.json({data: await service.list(date)})
+  }
 }
 
 const validFields = [
